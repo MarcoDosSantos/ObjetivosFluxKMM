@@ -95,6 +95,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation("io.insert-koin:koin-test:3.5.3")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

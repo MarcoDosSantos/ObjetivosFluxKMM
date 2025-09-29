@@ -31,11 +31,16 @@ import org.marcodossantos.project.common.getColorsTheme
 import org.marcodossantos.project.data.TitleTopBarTypes
 import moe.tlaster.precompose.navigation.path
 import org.marcodossantos.project.navigation.Navigation
+import org.marcodossantos.project.di.initKoin
+import org.marcodossantos.project.di.appModule
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview()
 @Composable
 fun App() {
+    // Inicializar Koin
+    initKoin(appModule)
+
     PreComposeApp {
         val colors = getColorsTheme()
 
@@ -121,5 +126,3 @@ fun getTitleTopAppBar(navigator: Navigator): String {
     }
     return titleTopBar.value
 }
-
-

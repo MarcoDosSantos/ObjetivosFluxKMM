@@ -1,3 +1,7 @@
+import org.koin.core.context.startKoin
+import org.koin.test.KoinTest
+import org.koin.test.inject
+import org.marcodossantos.project.di.appModule
 import org.marcodossantos.project.data.ExpenseManager
 import org.marcodossantos.project.data.ExpenseRepositoryImpl
 import org.marcodossantos.project.domain.model.Expense
@@ -8,9 +12,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class RepositoryTest {
-    private val expenseManager = ExpenseManager
-    private val repo = ExpenseRepositoryImpl(expenseManager)
+class RepositoryTest : KoinTest {
+    private val repo by inject<ExpenseRepositoryImpl>()
+    private val expenseManager by inject<ExpenseManager>()
+
+    init {
+        startKoin { modules(appModule) }
+    }
 
     @Test
     fun expense_list_is_not_empty(){
