@@ -1,11 +1,13 @@
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.marcodossantos.project.di.appModule
 import org.marcodossantos.project.data.ExpenseManager
-import org.marcodossantos.project.data.ExpenseRepositoryImpl
+import org.marcodossantos.project.domain.ExpenseRepository
 import org.marcodossantos.project.domain.model.Expense
 import org.marcodossantos.project.domain.model.ExpenseCategory
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -13,11 +15,16 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class RepositoryTest : KoinTest {
-    private val repo by inject<ExpenseRepositoryImpl>()
+    private val repo by inject<ExpenseRepository>()
     private val expenseManager by inject<ExpenseManager>()
 
     init {
         startKoin { modules(appModule) }
+    }
+
+    @AfterTest
+    fun tearDown() {
+        stopKoin()
     }
 
     @Test

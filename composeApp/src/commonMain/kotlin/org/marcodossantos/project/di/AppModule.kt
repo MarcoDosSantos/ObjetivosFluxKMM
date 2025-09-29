@@ -8,5 +8,5 @@ import org.marcodossantos.project.domain.ExpenseRepository
 val appModule = module {
     single { ExpenseManager }
     single<ExpenseRepository> { ExpenseRepositoryImpl(get()) }
+    single<ExpenseRepositoryImpl> { get<ExpenseRepository>() as ExpenseRepositoryImpl }
 }
-
