@@ -63,6 +63,8 @@ kotlin {
             implementation(project.dependencies.platform("io.insert-koin:koin-bom:3.5.1"))
             implementation("io.insert-koin:koin-core")
             implementation("io.insert-koin:koin-android")
+            // Multiplatform Settings solo en Android
+            //implementation("com.russhwolf:multiplatform-settings:1.1.1")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -85,6 +87,10 @@ kotlin {
             implementation("io.insert-koin:koin-core")
             implementation("io.insert-koin:koin-compose")
             api("moe.tlaster:precompose-koin:1.5.10")
+            // kotlinx.serialization
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+            implementation("com.russhwolf:multiplatform-settings:1.1.1")
         }
         iosMain.dependencies {
             //Koin
@@ -92,6 +98,8 @@ kotlin {
             implementation("io.insert-koin:koin-core")
             implementation("io.insert-koin:koin-compose")
             api("moe.tlaster:precompose-koin:1.5.10")
+            // Multiplatform Settings solo en iOS
+            //implementation("com.russhwolf:multiplatform-settings:1.1.1")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -100,6 +108,8 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            // Multiplatform Settings solo en Desktop
+            //implementation("com.russhwolf:multiplatform-settings:1.1.1")
         }
     }
 }

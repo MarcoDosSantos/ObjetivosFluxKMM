@@ -29,11 +29,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.russhwolf.settings.Settings
 import org.marcodossantos.project.common.getColorsTheme
-
 import org.marcodossantos.project.domain.model.Expense
 import org.marcodossantos.project.presentation.ExpensesUIState
 
+
+private val settings: Settings = Settings()
 @Composable
 fun ExpensesScreen(
     uiState: ExpensesUIState,
@@ -41,6 +43,7 @@ fun ExpensesScreen(
     modifier: Modifier = Modifier) {
 
     val colors = getColorsTheme()
+
 
     LazyColumn(
         modifier = modifier.padding(16.dp),

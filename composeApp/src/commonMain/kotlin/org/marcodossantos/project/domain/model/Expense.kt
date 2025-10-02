@@ -9,17 +9,24 @@ import androidx.compose.material.icons.filled.House
 import androidx.compose.material.icons.filled.PartyMode
 import androidx.compose.material.icons.filled.ViewCozy
 import androidx.compose.ui.graphics.vector.ImageVector
+import kotlinx.serialization.Serializable
 
+
+@Serializable
 data class Expense(
     val id: Long = -1,
     val category: ExpenseCategory,
     val amount: Double,
     val description: String
-) {
-    val icon = category.icon
+)
+
+@Serializable
+enum class ExpenseCategory {
+    GROCERIES, PARTY, SNACKS, COFFEE, CAR, HOUSE, OTHER
 }
 
-enum class ExpenseCategory(val icon: ImageVector){
+// Enum para UI (no serializable)
+enum class ExpenseCategoryIcon(val icon: ImageVector){
     GROCERIES(Icons.Default.FoodBank),
     PARTY(Icons.Default.PartyMode),
     SNACKS(Icons.Default.Fastfood),

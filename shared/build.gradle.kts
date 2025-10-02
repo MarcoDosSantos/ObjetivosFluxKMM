@@ -50,7 +50,6 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            //implementation(projects.shared)
         }
         iosMain.dependencies {
 
