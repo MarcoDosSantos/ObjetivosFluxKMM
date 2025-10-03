@@ -25,92 +25,89 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.rememberNavigator
+import moe.tlaster.precompose.navigation.path
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.marcodossantos.project.common.AppTheme
 import org.marcodossantos.project.common.getColorsTheme
 import org.marcodossantos.project.data.TitleTopBarTypes
-import moe.tlaster.precompose.navigation.path
 import org.marcodossantos.project.navigation.Navigation
-import org.marcodossantos.project.di.initKoin
-import org.marcodossantos.project.di.appModule
+import org.koin.compose.KoinContext   // 👈 import necesario
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview()
 @Composable
 fun App() {
-    // Inicializar Koin
-    initKoin(appModule)
-
     PreComposeApp {
-        val colors = getColorsTheme()
+        // 👇 Provee el contexto de Koin a toda la UI
+        KoinContext {
+            val colors = getColorsTheme()
+            AppTheme {
+                val navigator = rememberNavigator()
+                val titleTopBar = getTitleTopAppBar(navigator)
+                val isEditOrAddExpenses = titleTopBar != TitleTopBarTypes.DASHBOARD.value
 
-        AppTheme {
-            val navigator = rememberNavigator()
-            val titleTopBar = getTitleTopAppBar(navigator)
-            val isEditOrAddExpenses = titleTopBar != TitleTopBarTypes.DASHBOARD.value
-            Scaffold(
-                modifier = Modifier.fillMaxSize(),
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = titleTopBar,
-                                fontSize = 25.sp,
-                                color = colors.textColor
-                            )
-                        },
-                        navigationIcon = {
-                            if (isEditOrAddExpenses) {
-                                IconButton(
-                                    onClick = {
-                                        navigator.popBackStack()
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    text = titleTopBar,
+                                    fontSize = 25.sp,
+                                    color = colors.textColor
+                                )
+                            },
+                            navigationIcon = {
+                                if (isEditOrAddExpenses) {
+                                    IconButton(
+                                        onClick = { navigator.popBackStack() }
+                                    ) {
+                                        Icon(
+                                            modifier = Modifier.padding(start = 16.dp),
+                                            imageVector = Icons.Default.ArrowBack,
+                                            tint = colors.textColor,
+                                            contentDescription = "Volver a pantalla anterior"
+                                        )
                                     }
-                                ) {
+                                } else {
                                     Icon(
                                         modifier = Modifier.padding(start = 16.dp),
-                                        imageVector = Icons.Default.ArrowBack,
+                                        imageVector = Icons.Default.Apps,
                                         tint = colors.textColor,
-                                        contentDescription = "Volver a pantalla anterior"
+                                        contentDescription = "Pantalla principal"
                                     )
                                 }
-                            } else {
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = colors.backgroundColor
+                            )
+                        )
+                    },
+                    floatingActionButton = {
+                        if (!isEditOrAddExpenses) {
+                            FloatingActionButton(
+                                modifier = Modifier.padding(8.dp),
+                                onClick = { navigator.navigate("/addExpenses") },
+                                shape = RoundedCornerShape(50),
+                                containerColor = Color.Black,
+                                contentColor = Color.White
+                            ) {
                                 Icon(
-                                    modifier = Modifier.padding(start = 16.dp),
-                                    imageVector = Icons.Default.Apps,
-                                    tint = colors.textColor,
-                                    contentDescription = "Pantalla principal"
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "FAB Add"
                                 )
                             }
-
-
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(containerColor = colors.backgroundColor)
-                    )
-                },
-                floatingActionButton = {
-                    if (!isEditOrAddExpenses) {
-                        FloatingActionButton(
-                            modifier = Modifier.padding(8.dp),
-                            onClick = {
-                                navigator.navigate("/addExpenses")
-                            },
-                            shape = RoundedCornerShape(50),
-                            containerColor = Color.Black,
-                            contentColor = Color.White
-                        ) { Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "FAB Add") }
+                        }
                     }
+                ) { innerPadding ->
+                    Navigation(
+                        navigator = navigator,
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
-
-            ) { innerPadding ->
-                Navigation(
-                    navigator = navigator,
-                    modifier = Modifier.padding(innerPadding))
             }
         }
     }
-
 }
 
 @Composable
@@ -118,7 +115,6 @@ fun getTitleTopAppBar(navigator: Navigator): String {
     val currentEntry by navigator.currentEntry.collectAsStateWithLifecycle(null)
     val route = currentEntry?.route?.route ?: ""
     val id = currentEntry?.path<Long>("id")
-
     val titleTopBar = when {
         route.startsWith("/addExpenses") && id != null -> TitleTopBarTypes.EDIT
         route.startsWith("/addExpenses") -> TitleTopBarTypes.ADD

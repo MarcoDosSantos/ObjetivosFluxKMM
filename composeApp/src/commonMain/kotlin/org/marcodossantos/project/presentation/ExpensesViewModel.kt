@@ -14,44 +14,48 @@ class ExpensesViewModel(private val repository: ExpenseRepository) : ViewModel()
 
     private val _uiState = MutableStateFlow(ExpensesUIState())
     val uiState = _uiState.asStateFlow()
-    private val expenses = repository.getAllExpenses()
 
     init {
-        getAllExpenses()
+        refresh()
     }
 
-    private fun getAllExpenses() {
+    private fun refresh() {
         viewModelScope.launch {
-            repository.getAllExpenses()
-            updateUIState()
+            val list = repository.getAllExpenses()
+            _uiState.update { state ->
+                state.copy(
+                    expenses = list,
+                    total = list.sumOf { it.amount }
+                )
+            }
         }
     }
 
     fun addNewExpense(expense: Expense) {
         viewModelScope.launch {
             repository.addNewExpense(expense)
-            updateUIState()
+            refresh()
         }
     }
 
     fun editExpense(expense: Expense) {
         viewModelScope.launch {
             repository.editExpense(expense)
-            updateUIState()
+            refresh()
         }
     }
 
     fun deleteExpense(expense: Expense) {
         viewModelScope.launch {
             repository.deleteExpense(expense)
-            updateUIState()
+            refresh()
         }
     }
 
     fun deleteAllExpenses() {
         viewModelScope.launch {
             repository.deleteAllExpenses()
-            updateUIState()
+            refresh()
         }
     }
 
@@ -59,18 +63,7 @@ class ExpensesViewModel(private val repository: ExpenseRepository) : ViewModel()
         return repository.getExpenseById(id)
     }
 
-    private fun updateUIState() {
-        _uiState.update { state ->
-            state.copy(
-                expenses = expenses,
-                total = expenses.sumOf { it.amount }
-            )
-        }
-    }
-
-    fun getCategories(): List<ExpenseCategory> {
-        return repository.getCategories()
-    }
+    fun getCategories(): List<ExpenseCategory> = repository.getCategories()
 }
 
 data class ExpensesUIState(
